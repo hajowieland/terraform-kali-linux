@@ -96,7 +96,7 @@ resource "aws_route_table" "rt-ipv4only" {
 
 data "aws_route_table" "rt" {
   count          = "${var.create_vpc == 1 ? 1 : 0}"
-  route_table_id = "${var.use_ipv6 == 0 ? "${join("", aws_route_table.rt-ipv6.*.id)}" : "${join("", aws_route_table.rt-ipv4only.*.id)}"}"
+  route_table_id = "${var.use_ipv6 == 1 ? "${join("", aws_route_table.rt-ipv6.*.id)}" : "${join("", aws_route_table.rt-ipv4only.*.id)}"}"
 }
 
 resource "aws_route_table_association" "rtassoc" {
