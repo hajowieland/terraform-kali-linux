@@ -60,5 +60,5 @@ variable "ec2_instance_type" {
 
 variable "packer_ami" {
   description = "Packer AMI ID to use for EC2 instance (NOTE: run `packer buidl packer.json` and use the generated AMI ID here)"
-  default = ""
+  default = "ami-10e00b6d"
 }
