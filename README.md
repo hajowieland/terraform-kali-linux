@@ -4,10 +4,11 @@
 
 Create a Kali Linux EC2 instance by utilizing [Packer](http://packer.io/) by using the official [Kali Linux AMI](https://aws.amazon.com/marketplace/pp/B01M26MMTT/) and and `apt-get dist-upgrade` to be up-to-date with the Kali Linux [Rolling Release](https://www.kali.org/kali-linux-releases/).
 
+If you don't want to run Packer, Terraform uses the default Kali Linux AMI `ami-10e00b6d` based on **Kali Linux 2018.3a**. Please keep in mind that this is outdated and you have to update yourself to the current Rolling Release (`apt-get update && apt-get dist-upgrade`).
 
 ## IMPORTANT
 
-Before running the `packer build`, you have to accept the terms and conditions of the Kali AMI (this is an requirement of the AWS marketplace):
+Before running the `packer build`, you have to accept the terms and conditions of the Kali Linux AMI (this is an requirement of the AWS Marketplace):
 
 https://aws.amazon.com/marketplace/pp/B01M26MMTT/
 
@@ -37,12 +38,22 @@ Note down the AMI ID at the end:
 ...
 ==> Builds finished. The artifacts of successful builds are:
 --> amazon-ebs: AMIs were created:
-eu-central-1: ami-1a234bc56d7efab8c
+eu-central-1: ami-10e00b6d
 ```
 
 ### Terraform: Customize your EC2 instance
 
-## Inputs
+By default, Terraform uses this configuration if you don't create an AMI with Packer and leave everything as is:
+
+* Creates a **new VPC** with CIDR range `10.23.0.0/16`
+* Create **new Subnet** with CIDR range `10.23.1.0/24`
+* Uses `IPv4` & `IPv6`
+* Creates **new AWS Key pair** from your `~/.ssh/id_rsa.pub` public key
+* Creates EC2 instance with instance type `t2.medium` (2 vCPU, 4.0 GB Memory)
+* EC2 instance uses default Kali Linux AMI `ami-10e00b6d` (based on **Kali Linux 2018.3a** so you have to update yourself)
+
+
+### Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
@@ -60,7 +71,7 @@ eu-central-1: ami-1a234bc56d7efab8c
 | vpc\_cidr | VPC CIDR block for new AWS VPC (e.g. `10.23.0.0/16` or `172.31.0.0/16`) - The Subnet CIDR must match this VPC CIDR | string | `"10.23.0.0/16"` | no |
 | vpc\_id | Use an existing VPC (please set create_vpc to false when using this) | string | `""` | no |
 
-## Outputs
+### Outputs
 
 | Name | Description |
 |------|-------------|
