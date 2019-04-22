@@ -57,3 +57,8 @@ variable "ec2_instance_type" {
   description = "EC2 instance type (e.g. `t2.medium` or `t2.small`)"
   default     = "t2.medium"
 }
+
+variable "packer_ami" {
+  description = "Packer AMI ID to use for EC2 instance (NOTE: run `packer buidl packer.json` and use the generated AMI ID here)"
+  default = ""
+}

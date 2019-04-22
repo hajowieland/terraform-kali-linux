@@ -19,9 +19,11 @@
     "provisioners": [
         {
             "type": "shell",
+            "environment_vars": "DEBIAN_FRONTEND=noninteractive",
+            "execute_command": "sudo -S env {{ .Vars }} {{ .Path }}",
             "inline":[
-                "DEBIAN_FRONTEND=noninteractive sudo apt-get update",
-                "DEBIAN_FRONTEND=noninteractive sudo apt-get dist-upgrade -y"
+                "apt-get update",
+                "apt-get -o Dpkg::Options::='--force-confnew' -q --force-yes -y dist-upgrade"
             ]
         }
     ]
