@@ -15,10 +15,10 @@ or (this will shown to you when you run this Terraform before accepting the term
 
 https://aws.amazon.com/marketplace/pp?sku=89bab4k3h9x4rkojcm2tj8j4l
 
-* Click on "Continue to Subscribe"
-* Then "Accept Terms"
+* Click on _"Continue to Subscribe"_
+* Then _"Accept Terms"_
 
-and no, this Kali AMI has no price - the price shown to you on the AWS marketplace is for the calculated EC2 instance type usage.
+and no, this Kali AMI has ***no costs*** (it's FREE!) - the price shown to you on the AWS Marketplace is for the calculated EC2 instance type usage.
 
 
 ## Usage
