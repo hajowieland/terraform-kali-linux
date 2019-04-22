@@ -1,22 +1,3 @@
-terraform {
-  backend "s3" {
-    bucket = "terraform-naponet-state"
-    key    = "450864732710-eu-central-1-kali-linux"
-    region = "eu-central-1"
-  }
-}
-
-## AMI for EKS:
-data "aws_ami" "kali" {
-  most_recent = true
-  owners      = ["aws-marketplace"]
-
-  filter {
-    name   = "name"
-    values = ["*8b7fdfe3-8cd5-43cc-8e5e-4e0e7f4139d5*"]
-  }
-}
-
 ## VPC:
 resource "aws_vpc" "new-vpc" {
   count = "${var.create_vpc == true ? 1 : 0}"
@@ -221,7 +202,7 @@ USERDATA
 }
 
 resource "aws_instance" "kali_machine" {
-  ami                         = "${data.aws_ami.kali.id}"
+  ami                         = "${var.packer_ami}"
   instance_type               = "${var.ec2_instance_type}"
   monitoring                  = false
   vpc_security_group_ids      = ["${var.use_ipv6 == 1 ? "${join("", aws_security_group.sg-ipv6.*.id)}" : "${join("", aws_security_group.sg-ipv4-only.*.id)}"}"]
