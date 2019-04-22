@@ -1,9 +1,13 @@
-# terraform-kali-linux
+# Terraform & Packer for Kali Linux EC2 instance
+
+## Description
+
+Create a Kali Linux EC2 instance by utilizing [Packer](http://packer.io/) by using the official [Kali Linux AMI](https://aws.amazon.com/marketplace/pp/B01M26MMTT/) and and `apt-get dist-upgrade` to be up-to-date with the Kali Linux [Rolling Release](https://www.kali.org/kali-linux-releases/).
 
 
-IMPORTANT:
+## IMPORTANT
 
-Before running this Terraform code, you have to accept the terms and conditions of the Kali AMI (this is an requirement of the AWS marketplace):
+Before running the `packer build`, you have to accept the terms and conditions of the Kali AMI (this is an requirement of the AWS marketplace):
 
 https://aws.amazon.com/marketplace/pp/B01M26MMTT/
 
@@ -15,3 +19,52 @@ https://aws.amazon.com/marketplace/pp?sku=89bab4k3h9x4rkojcm2tj8j4l
 * Then "Accept Terms"
 
 and no, this Kali AMI has no price - the price shown to you on the AWS marketplace is for the calculated EC2 instance type usage.
+
+
+## Usage
+
+### Clone the repository
+
+`git clone git@github.com:hajowieland/terraform-kali-linux.git` (when using SSH)
+
+### Packer: Build your custom AMI
+
+`packer build packer.json`
+
+Note down the AMI ID at the end:
+
+```
+...
+==> Builds finished. The artifacts of successful builds are:
+--> amazon-ebs: AMIs were created:
+eu-central-1: ami-1a234bc53d0fbdd8e
+```
+
+### Terraform: Customize your EC2 instance
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|:----:|:-----:|:-----:|
+| aws\_profile | AWS cli profile | string | `"default"` | no |
+| aws\_region | AWS region | string | `"eu-central-1"` | no |
+| create\_vpc | Create new VPC (e.g. `true` or `false`) - Please set to false when setting an existing vpc_id above - NOTE: no doublequotes around the true or false | string | `"true"` | no |
+| ec2\_instance\_type | EC2 instance type (e.g. `t2.medium` or `t2.small`) | string | `"t2.medium"` | no |
+| packer\_ami | Packer AMI ID to use for EC2 instance (NOTE: run `packer buidl packer.json` and use the generated AMI ID here) | string | `""` | no |
+| public\_key\_path | Path to your SSH public key (e.g. `~/.ssh/id_rsa.pub`) | string | `"~/.ssh/id_rsa.pub"` | no |
+| ssh\_key\_pair\_name | AWS Key pair name of existing SSH Key pair on AWS (e.g. `my-key`) | string | `""` | no |
+| subnet\_cidr\_block | The CIDR block to use for the newly created subnet (e.g. `10.23.0.0/24` or `172.31.0.0/20`) - Must be in range of VPC CIDR | string | `"10.23.1.0/24"` | no |
+| subnet\_id | Use an existting Subnet in an existing VPC (please set create_vpc to false when using this) | string | `""` | no |
+| use\_ipv4only | Use IPv4 only (e.g. `true` or `false`) - Please set use_ipv6 to false when enabling this - NOTE: no doublequotes around the true or false | string | `"false"` | no |
+| use\_ipv6 | Use IPv4 AND IPv6 (e.g. `true` or `false`) - NOTE: no doublequotes around the true or false | string | `"true"` | no |
+| vpc\_cidr | VPC CIDR block for newly created AWS VPC (e.g. `10.23.0.0/16` or `172.31.0.0/16`) - The Subnet CIDR below must match this VPC CIDR | string | `"10.23.0.0/16"` | no |
+| vpc\_id | Use an existing VPC (please set create_vpc to false when using this) | string | `""` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| public\_ip | Public IPv4 address of dev machine instance |
+
+
+
