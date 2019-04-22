@@ -41,7 +41,7 @@ Note down the AMI ID at the end:
 eu-central-1: ami-10e00b6d
 ```
 
-### Terraform: Customize your EC2 instance
+### Terraform: Customize your AWS EC2 instance configuration
 
 By default, Terraform uses this configuration if you don't create an AMI with Packer and leave everything as is:
 
@@ -57,7 +57,7 @@ By default, Terraform uses this configuration if you don't create an AMI with Pa
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| packer\_ami | Packer AMI ID to use for EC2 instance (NOTE: run `packer buidl packer.json` and use the generated AMI ID here) | string | `""` | yes |
+| packer\_ami | Packer AMI ID to use for EC2 instance (NOTE: run `packer buidl packer.json` and use the generated AMI ID here) | string | `"ami-10e00b6d"` | yes |
 | aws\_profile | AWS cli profile | string | `"default"` | no |
 | aws\_region | AWS region | string | `"eu-central-1"` | no |
 | create\_vpc | Create new VPC (e.g. `true` or `false`) - Please set to false when setting an existing vpc_id above - NOTE: no doublequotes around the true or false | string | `"true"` | no |
