@@ -75,7 +75,7 @@ By default, Terraform uses this configuration if you don't create an AMI with Pa
 
 | Name | Description |
 |------|-------------|
-| public\_ip | Public IPv4 address of dev machine instance |
+| public\_ip | Public IPv4 address of Kali EC2 instance |
 
 
 
