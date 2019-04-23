@@ -29,6 +29,8 @@ resource "aws_subnet" "public-subnet" {
     Project   = "Kali"
     CreatedBy = "Terraform"
   }
+
+  depends_on = ["aws_vpc.new-vpc"]
 }
 
 # data "aws_subnet_ids" "subnet_ids" {
@@ -48,6 +50,8 @@ resource "aws_internet_gateway" "igw" {
     Project   = "Kali"
     CreatedBy = "Terraform"
   }
+
+  depends_on = ["aws_subnet.public-subnet"]
 }
 
 data "aws_internet_gateway" "igw" {
@@ -55,6 +59,8 @@ data "aws_internet_gateway" "igw" {
     name   = "attachment.vpc-id"
     values = ["${data.aws_vpc.vpc.id}"]
   }
+
+  depends_on = ["aws_vpc.new-vpc"]
 }
 
 ## Route Table
@@ -77,6 +83,8 @@ resource "aws_route_table" "rt-ipv6" {
     Project   = "Kali"
     CreatedBy = "Terraform"
   }
+
+  depends_on = ["aws_internet_gateway.igw"]
 }
 
 resource "aws_route_table" "rt-ipv4only" {
@@ -92,6 +100,8 @@ resource "aws_route_table" "rt-ipv4only" {
     Project   = "Kali"
     CreatedBy = "Terraform"
   }
+
+  depends_on = ["aws_internet_gateway.igw"]
 }
 
 data "aws_route_table" "rt" {
