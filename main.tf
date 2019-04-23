@@ -1,6 +1,6 @@
 ## VPC:
 resource "aws_vpc" "new-vpc" {
-  count = "${var.create_vpc == true ? 1 : 0}"
+  count = "${var.create_vpc == 1 ? 1 : 0}"
 
   cidr_block                       = "${var.vpc_cidr}"
   enable_dns_support               = true
