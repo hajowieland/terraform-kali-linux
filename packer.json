@@ -13,7 +13,13 @@
             "secret_key": "{{user `aws_secret_key`}}",
             "source_ami": "ami-0fbb40f398aef1e61",
             "ssh_username": "ec2-user",
-            "type": "amazon-ebs"
+            "type": "amazon-ebs",
+            "tags": {
+                "OS_Version": "Kali Linux",
+                "Release": "Latest",
+                "Base_AMI_Name": "{{ .SourceAMIName }}",
+                "Project": "Kali"
+              }
         }
     ],
     "provisioners": [
