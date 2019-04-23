@@ -33,10 +33,6 @@ resource "aws_subnet" "public-subnet" {
   depends_on = ["aws_vpc.new-vpc"]
 }
 
-# data "aws_subnet_ids" "subnet_ids" {
-#     vpc_id = "${var.create_vpc == true ? data.aws_vpc.vpc.id : var.vpc_id}"
-# }
-
 data "aws_subnet" "subnet" {
   id = "${var.subnet_id != "" ? var.subnet_id : "${join("", aws_subnet.public-subnet.*.id)}"}"
 }
@@ -50,70 +46,50 @@ resource "aws_internet_gateway" "igw" {
     Project   = "Kali"
     CreatedBy = "Terraform"
   }
-
-  depends_on = ["aws_subnet.public-subnet"]
-}
-
-data "aws_internet_gateway" "igw" {
-  filter {
-    name   = "attachment.vpc-id"
-    values = ["${data.aws_vpc.vpc.id}"]
-  }
-
-  depends_on = ["aws_vpc.new-vpc"]
 }
 
 ## Route Table
 
 resource "aws_route_table" "rt-ipv6" {
   count  = "${var.create_vpc * var.use_ipv6 == 1 ? 1 : 0}"
-  vpc_id = "${data.aws_vpc.vpc.id}"
+  vpc_id = "${aws_vpc.new-vpc.id}"
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = "${data.aws_internet_gateway.igw.id}"
+    gateway_id = "${aws_internet_gateway.igw.id}"
   }
 
   route {
     ipv6_cidr_block = "::/0"
-    gateway_id      = "${data.aws_internet_gateway.igw.id}"
+    gateway_id      = "${aws_internet_gateway.igw.id}"
   }
 
   tags = {
     Project   = "Kali"
     CreatedBy = "Terraform"
   }
-
-  depends_on = ["aws_internet_gateway.igw"]
 }
 
 resource "aws_route_table" "rt-ipv4only" {
   count  = "${var.create_vpc * var.use_ipv4only == 1 ? 1 : 0}"
-  vpc_id = "${data.aws_vpc.vpc.id}"
+  vpc_id = "${aws_vpc.new-vpc.id}"
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = "${data.aws_internet_gateway.igw.gateway_id}"
+    gateway_id = "${aws_internet_gateway.igw.id}"
   }
 
   tags = {
     Project   = "Kali"
     CreatedBy = "Terraform"
   }
-
-  depends_on = ["aws_internet_gateway.igw"]
-}
-
-data "aws_route_table" "rt" {
-  count          = "${var.create_vpc == 1 ? 1 : 0}"
-  route_table_id = "${var.use_ipv6 == 1 ? "${join("", aws_route_table.rt-ipv6.*.id)}" : "${join("", aws_route_table.rt-ipv4only.*.id)}"}"
 }
 
 resource "aws_route_table_association" "rtassoc" {
   count = "${var.create_vpc == 1 ? 1 : 0}"
 
   subnet_id      = "${aws_subnet.public-subnet.id}"
-  route_table_id = "${data.aws_route_table.rt.id}"
+  route_table_id = "${var.use_ipv6 == 1 ? "${join("", aws_route_table.rt-ipv6.*.id)}" : "${join("", aws_route_table.rt-ipv4only.*.id)}"}"
 }
 
 ## Security Group
