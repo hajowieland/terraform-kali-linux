@@ -29,7 +29,7 @@
             "execute_command": "sudo -S env {{ .Vars }} {{ .Path }}",
             "inline":[
                 "apt-get update",
-                "apt-get -o Dpkg::Options::='--force-confnew' -q --force-yes -y dist-upgrade",
+                "apt -o Dpkg::Options::='--force-confnew' -q --force-yes -y full-upgrade",
                 "apt-get autoremove -q -y",
                 "apt-get autoclean -q -y"
             ]
