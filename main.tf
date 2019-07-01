@@ -8,8 +8,8 @@ resource "aws_vpc" "new-vpc" {
   assign_generated_ipv6_cidr_block = "${var.use_ipv6 == 0 ? true : false}"
 
   tags = {
-    Project   = "Kali"
-    CreatedBy = "Terraform"
+    Project   = "kali"
+    ManagedBy = "terraform"
   }
 }
 
@@ -26,8 +26,8 @@ resource "aws_subnet" "public-subnet" {
   assign_ipv6_address_on_creation = "${var.use_ipv6 == true ? true : false}"
 
   tags = {
-    Project   = "Kali"
-    CreatedBy = "Terraform"
+    Project   = "kali"
+    ManagedBy = "terraform"
   }
 
   depends_on = ["aws_vpc.new-vpc"]
@@ -43,8 +43,8 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = "${data.aws_vpc.vpc.id}"
 
   tags = {
-    Project   = "Kali"
-    CreatedBy = "Terraform"
+    Project   = "kali"
+    ManagedBy = "terraform"
   }
 }
 
@@ -52,43 +52,43 @@ resource "aws_internet_gateway" "igw" {
 
 resource "aws_route_table" "rt-ipv6" {
   count  = "${var.create_vpc * var.use_ipv6 == 1 ? 1 : 0}"
-  vpc_id = "${aws_vpc.new-vpc.id}"
+  vpc_id = "${aws_vpc.new-vpc[count.index].id}"
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.igw.id}"
+    gateway_id = "${aws_internet_gateway.igw[count.index].id}"
   }
 
   route {
     ipv6_cidr_block = "::/0"
-    gateway_id      = "${aws_internet_gateway.igw.id}"
+    gateway_id      = "${aws_internet_gateway.igw[count.index].id}"
   }
 
   tags = {
-    Project   = "Kali"
-    CreatedBy = "Terraform"
+    Project   = "kali"
+    ManagedBy = "terraform"
   }
 }
 
 resource "aws_route_table" "rt-ipv4only" {
   count  = "${var.create_vpc * var.use_ipv4only == 1 ? 1 : 0}"
-  vpc_id = "${aws_vpc.new-vpc.id}"
+  vpc_id = "${aws_vpc.new-vpc[count.index].id}"
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.igw.id}"
+    gateway_id = "${aws_internet_gateway.igw[count.index].id}"
   }
 
   tags = {
-    Project   = "Kali"
-    CreatedBy = "Terraform"
+    Project   = "kali"
+    ManagedBy = "terraform"
   }
 }
 
 resource "aws_route_table_association" "rtassoc" {
   count = "${var.create_vpc == 1 ? 1 : 0}"
 
-  subnet_id      = "${aws_subnet.public-subnet.id}"
+  subnet_id      = "${aws_subnet.public-subnet[count.index].id}"
   route_table_id = "${var.use_ipv6 == 1 ? "${join("", aws_route_table.rt-ipv6.*.id)}" : "${join("", aws_route_table.rt-ipv4only.*.id)}"}"
 }
 
@@ -96,8 +96,8 @@ resource "aws_route_table_association" "rtassoc" {
 
 resource "aws_security_group" "sg-ipv6" {
   count       = "${var.use_ipv6 == 1 ? 1 : 0}"
-  name        = "Kali-ipv6"
-  description = "Allow all IPv4 and IPv6 for Kali"
+  name        = "kali-ipv6"
+  description = "Allow all IPv4 and IPv6 for kali"
   vpc_id      = "${data.aws_vpc.vpc.id}"
 
   ingress {
@@ -128,16 +128,16 @@ resource "aws_security_group" "sg-ipv6" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
-  tags {
-    Project   = "Kali"
-    CreatedBy = "Terraform"
+  tags = {
+    Project   = "kali"
+    ManagedBy = "terraform"
   }
 }
 
 resource "aws_security_group" "sg-ipv4-only" {
   count       = "${var.use_ipv4only == 1 ? 1 : 0}"
-  name        = "Kali-ipv4only"
-  description = "Allow all IPv4 for Kali"
+  name        = "kali-ipv4only"
+  description = "Allow all IPv4 for kali"
   vpc_id      = "${data.aws_vpc.vpc.id}"
 
   ingress {
@@ -154,9 +154,9 @@ resource "aws_security_group" "sg-ipv4-only" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags {
-    Project   = "Kali"
-    CreatedBy = "Terraform"
+  tags = {
+    Project   = "kali"
+    ManagedBy = "terraform"
   }
 }
 
@@ -173,7 +173,7 @@ resource "aws_key_pair" "ssh_key_pair" {
 }
 
 locals {
-  key_pair_name = "${var.ssh_key_pair_name == "" ? aws_key_pair.ssh_key_pair.key_name : var.ssh_key_pair_name}"
+  key_pair_name = "${var.ssh_key_pair_name == "" ? aws_key_pair.ssh_key_pair.0.key_name : var.ssh_key_pair_name}"
 }
 
 ## EC2 instance
@@ -199,7 +199,7 @@ resource "aws_instance" "kali_machine" {
   user_data_base64            = "${base64encode(local.kali-userdata)}"
 
   tags = {
-    Project   = "Kali"
-    CreatedBy = "Terraform"
+    Project   = "kali"
+    ManagedBy = "terraform"
   }
 }

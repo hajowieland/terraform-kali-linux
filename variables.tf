@@ -39,18 +39,18 @@ variable "subnet_id" {
 }
 
 variable "create_vpc" {
-  description = "Create new VPC (e.g. `true` or `false`) - Please set to false when setting an existing vpc_id above - NOTE: no doublequotes around the true or false"
-  default     = true
+  description = "Create new VPC (e.g. `1` => true or `0` => false) - Please set to false when setting an existing vpc_id above"
+  default     = 1
 }
 
 variable "use_ipv6" {
-  description = "Use IPv4 AND IPv6 (e.g. `true` or `false`) - NOTE: no doublequotes around the true or false"
-  default     = true
+  description = "Use IPv4 AND IPv6 (e.g. `1` => true or `0` => false) - NOTE: no doublequotes around the true or false"
+  default     = 1
 }
 
 variable "use_ipv4only" {
-  description = "Use IPv4 only (e.g. `true` or `false`) - Please set use_ipv6 to false when enabling this - NOTE: no doublequotes around the true or false"
-  default     = false
+  description = "Use IPv4 only (e.g. `1` => true or `0` => false) - Please set use_ipv6 to false when enabling this"
+  default     = 0
 }
 
 variable "ec2_instance_type" {
