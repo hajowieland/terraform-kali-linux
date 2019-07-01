@@ -53,6 +53,9 @@ By default, Terraform uses this configuration if you don't create an AMI with Pa
 * EC2 instance uses default Kali Linux AMI `ami-10e00b6d` (based on **Kali Linux 2018.3a** so you have to update yourself)
 
 
+### Links
+
+If you want to completely build your own Kali Linux, you can use the official [kali-cloud-build](https://gitlab.com/kalilinux/build-scripts/kali-cloud-build) tools.
 ### Inputs
 
 | Name | Description | Type | Default | Required |
